@@ -81,11 +81,13 @@ class SortingRobot:
         Turn on the robot's light
         """
         self._light = "ON"
+
     def set_light_off(self):
         """
         Turn off the robot's light
         """
         self._light = "OFF"
+
     def light_is_on(self):
         """
         Returns True if the robot's light is on and False otherwise.
@@ -96,15 +98,67 @@ class SortingRobot:
         """
         Sort the robot's list.
         """
-        # Fill this out
-        pass
+        # Light will determine whether or not the robot should begin sorting
+
+        # First -- Turn the light on (indicate robot is ready to sort)
+        self.set_light_on()
+
+        # Pick up first item
+        self.swap_item()
+
+        # Check if the light is on. If so, begin sorting process
+        while self.light_is_on() == True:
+
+            # Check if robot is at the beginning of the list (see if it can move right)
+            # If it can't move right anymore (i.e. at the end of the list),
+            # Move on to execute line 126 or 136
+            while self.can_move_right() == True:
+
+                # Move right and compare items -- we want to select the smallest value
+                self.move_right()
+                if self.compare_item() == 1:
+                    self.swap_item()
+                    # at this point the robot should be holding the smaller value
+                    # return to line 115 to check condition. Can robot still move right?
+                    # if so, execute line 118 and continue until we reach the end of the list
+
+            # If the robot is at the end of the list and that index is empty:
+            if self.compare_item() == None:
+
+                # At this point the robot should be holding the biggest value
+                # Drop that value at the end of the list and turn the light off!
+                # We're all SORTED!
+                self.swap_item()
+                self.set_light_off()
+                break
+
+            # If we get to the end of the list and are holding the smallest value:
+            else:
+
+                # This means we can't move right anymore, but CAN move left
+                while self.can_move_left() == True:
+
+                    # Move left and compare items (shouldn't actually swap because robot has the smallest value)
+                    # If we get to an index which has nothing
+                    # Drop what we're currently holding
+                    # Then we'll 'increment our index by 1'
+                    # i.e. we'll move right and pick up that item
+                    self.move_left()
+                    if self.compare_item() == None:
+                        self.swap_item()
+                        self.move_right()
+                        self.swap_item()
+                        break
+                        # at this point our robot should be at the next index of the list
+                        # we break this loop and return to line 110
 
 
 if __name__ == "__main__":
     # Test our your implementation from the command line
     # with `python robot_sort.py`
 
-    l = [15, 41, 58, 49, 26, 4, 28, 8, 61, 60, 65, 21, 78, 14, 35, 90, 54, 5, 0, 87, 82, 96, 43, 92, 62, 97, 69, 94, 99, 93, 76, 47, 2, 88, 51, 40, 95, 6, 23, 81, 30, 19, 25, 91, 18, 68, 71, 9, 66, 1, 45, 33, 3, 72, 16, 85, 27, 59, 64, 39, 32, 24, 38, 84, 44, 80, 11, 73, 42, 20, 10, 29, 22, 98, 17, 48, 52, 67, 53, 74, 77, 37, 63, 31, 7, 75, 36, 89, 70, 34, 79, 83, 13, 57, 86, 12, 56, 50, 55, 46]
+    l = [15, 41, 58, 49, 26, 4, 28, 8, 61, 60, 65, 21, 78, 14, 35, 90, 54, 5, 0, 87, 82, 96, 43, 92, 62, 97, 69, 94, 99, 93, 76, 47, 2, 88, 51, 40, 95, 6, 23, 81, 30, 19, 25, 91, 18, 68, 71, 9, 66, 1,
+         45, 33, 3, 72, 16, 85, 27, 59, 64, 39, 32, 24, 38, 84, 44, 80, 11, 73, 42, 20, 10, 29, 22, 98, 17, 48, 52, 67, 53, 74, 77, 37, 63, 31, 7, 75, 36, 89, 70, 34, 79, 83, 13, 57, 86, 12, 56, 50, 55, 46]
 
     robot = SortingRobot(l)
 
